@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class ChoSeongSearch {
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		List<Product> products = getProducts();
-		SearchEngine engine = new SearchEngine();
+		SearchEngine engine = SearchEngine.getInstance();
 		boolean boolSearch = false;
 		
 		System.out.print("검색할 상품의 초성을 입력하세요: ");
@@ -31,6 +31,7 @@ public class ChoSeongSearch {
 		}
 		
 		Collections.sort(products, new SaleAmtDescCompare()); // 판매매출 내림차순 정렬
+		
 		for (Product product : products) {
 			boolSearch = engine.searchChoSeong(choStr, product.getSearchIndex());
 			if (boolSearch) {
@@ -45,7 +46,7 @@ public class ChoSeongSearch {
 	public static class SaleAmtDescCompare implements Comparator<Product> {
 		@Override
 		public int compare(Product p1, Product p2) {
-			return p1.getSaleAmt() > p2.getSaleAmt() ? -1 : p1.getSaleAmt() < p2.getSaleAmt() ? 1:0;
+			return p1.getSaleAmt() > p2.getSaleAmt() ? -1 : p1.getSaleAmt() < p2.getSaleAmt() ? 1 : 0;
 		}
 	}
 	
@@ -61,7 +62,7 @@ public class ChoSeongSearch {
 		products.add(new Product("24718904", "[정자] 박종일 프로헤어", 29000, 1));
 		products.add(new Product("24703223", "[구로디지털] LA식당", 30000, 29));
 		products.add(new Product("24702630", "고려홍삼명가 명기홍삼정", 65300, 1));
-		products.add(new Product("24692301", "쿠쿠 압력밥속", 21000, 2));
+		products.add(new Product("24692301", "쿠쿠 압력밥솥", 21000, 2));
 		products.add(new Product("24671273", "나이키 BEST 런닝화 22종", 45000, 20));
 		products.add(new Product("24670532", "투세븐 자체제작 F/W신상슈즈", 34900, 2));
 		products.add(new Product("24669991", "가을맞이 모던큐트 로퍼/플랫", 17900, 9));

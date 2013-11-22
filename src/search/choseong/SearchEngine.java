@@ -7,10 +7,11 @@ import java.util.regex.Pattern;
 
 public class SearchEngine {
 	
-	private Map<Integer,Integer> map = null;
+	private Map<Integer, Integer> map;
+	private static volatile SearchEngine uniqueInstance;
 	
-	public SearchEngine() {
-		map = new HashMap<Integer,Integer>();
+	private SearchEngine() {
+		map = new HashMap<Integer, Integer>();
 		
 		map.put(0x1100, 0x3131); // ㄱ - http://www.unicode.org/charts/PDF/U3130.pdf
 		map.put(0x1101, 0x3132); // ㄲ
@@ -31,6 +32,22 @@ public class SearchEngine {
 		map.put(0x1110, 0x314C); // ㅌ
 		map.put(0x1111, 0x314D); // ㅍ
 		map.put(0x1112, 0x314E); // ㅎ
+	}
+	
+	/**
+	 * 싱글턴 패턴 적용
+	 * 
+	 * @return SearchEngine 인스턴스
+	 */
+	public static SearchEngine getInstance() {
+		if (uniqueInstance == null) {
+			synchronized (SearchEngine.class) {
+				if (uniqueInstance == null) {
+					uniqueInstance = new SearchEngine();
+				}
+			}
+		}
+		return uniqueInstance;
 	}
 	
 	/**
@@ -79,13 +96,11 @@ public class SearchEngine {
 	 * @return 한글호환자모 초성
 	 */
 	private char getChoUnicodeFromHanChr(char hanChar) {
-		/**
-		 * 한글 유니코드 영역이 '가나다'순으로 배열되어 있어 각 초성별 개수를 계산하여 초성 반환
-		 */
+		// 한글 유니코드 영역이 '가나다'순으로 배열되어 있어 각 초성별 개수를 계산하여 초성 반환
 		int choUnicode = 0x1100; // ㄱ - http://www.unicode.org/charts/PDF/U1100.pdf
 		int hanUnicode = hanChar - 0xAC00; // 가 - http://www.unicode.org/charts/PDF/UAC00.pdf
 		
-		choUnicode += hanUnicode / 28 / 21; // 종성개수*중성개수=588개
+		choUnicode += hanUnicode / 28 / 21; // 종성개수 / 중성개수
 		
 		return (char)convertHanComJamoFromHanJamo(choUnicode);
 	}

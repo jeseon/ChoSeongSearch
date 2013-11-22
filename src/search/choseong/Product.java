@@ -12,9 +12,10 @@ public class Product {
 	private int qty;
 	private int saleAmt;
 	private String searchIndex;
+	private SearchEngine engine;
 	
 	public Product(String sku, String name, int price, int qty) {
-		SearchEngine engine = new SearchEngine();
+		engine = SearchEngine.getInstance();
 		
 		this.sku = sku;
 		this.name = name;
