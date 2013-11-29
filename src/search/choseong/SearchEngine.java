@@ -3,7 +3,6 @@ package search.choseong;
 import java.lang.Character.UnicodeBlock;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class SearchEngine {
 	
@@ -13,6 +12,7 @@ public class SearchEngine {
 	private SearchEngine() {
 		map = new HashMap<Integer, Integer>();
 		
+		// 한글 자모 초성을 한글호환자모 유니코드로 변환
 		map.put(0x1100, 0x3131); // ㄱ - http://www.unicode.org/charts/PDF/U3130.pdf
 		map.put(0x1101, 0x3132); // ㄲ
 		map.put(0x1102, 0x3134); // ㄴ
@@ -47,18 +47,8 @@ public class SearchEngine {
 				}
 			}
 		}
+		
 		return uniqueInstance;
-	}
-	
-	/**
-	 * 정규표현식으로 대/소문자 구별없이 검색
-	 * 
-	 * @param choStr 초성 검색어 (예: ㅂㅅ, ㄱㄹㄷ) 
-	 * @param searchIndex 검색대상 색인
-	 * @return 검색어가 있을 경우 true
-	 */
-	public Boolean searchChoSeong(String choStr, String searchIndex) {
-		return Pattern.compile(Pattern.quote(choStr), Pattern.CASE_INSENSITIVE).matcher(searchIndex).find();
 	}
 	
 	/**
@@ -68,16 +58,16 @@ public class SearchEngine {
 	 * @return 초성으로 변환된 문자열
 	 */
 	public String getSearchIndex(String hanStr) {
+		char chr;
 		String tmpStr = hanStr.replaceAll("\\p{Punct}|\\p{Space}", ""); // 특수문자/공백 제거
 		StringBuffer choChars = new StringBuffer();
-		char chr = ' ';
 		
 		for (int idx = 0; idx < tmpStr.length(); idx++) {
 			chr = tmpStr.charAt(idx);
 			
 			Character.UnicodeBlock unicodeBlock = Character.UnicodeBlock.of(chr);
-			if (UnicodeBlock.HANGUL_SYLLABLES.equals(unicodeBlock) ||			// 한글 완성형 유니코
-	            UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals(unicodeBlock) ||	// 한글 호환 자모 유니코드 
+			if (UnicodeBlock.HANGUL_SYLLABLES.equals(unicodeBlock) ||			// 한글 완성형 유니코드
+	            UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals(unicodeBlock) ||	// 한글 호환 자모 유니코드
 	            UnicodeBlock.HANGUL_JAMO.equals(unicodeBlock))					// 한글 자모 유니코드
 			{
 				choChars.append(getChoUnicodeFromHanChr(tmpStr.charAt(idx)));

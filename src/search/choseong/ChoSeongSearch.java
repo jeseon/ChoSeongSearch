@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 
 /**
@@ -16,7 +17,6 @@ import java.util.Scanner;
 public class ChoSeongSearch {
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		List<Product> products = getProducts();
-		SearchEngine engine = SearchEngine.getInstance();
 		boolean boolSearch = false;
 		
 		System.out.print("검색할 상품의 초성을 입력하세요: ");
@@ -33,7 +33,7 @@ public class ChoSeongSearch {
 		Collections.sort(products, new SaleAmtDescCompare()); // 판매매출 내림차순 정렬
 		
 		for (Product product : products) {
-			boolSearch = engine.searchChoSeong(choStr, product.getSearchIndex());
+			boolSearch = Pattern.compile(Pattern.quote(choStr), Pattern.CASE_INSENSITIVE).matcher(product.getSearchIndex()).find();
 			if (boolSearch) {
 				System.out.println(product.getName());
 			}
